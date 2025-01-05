@@ -10,12 +10,10 @@
 use self::super::{REGISTRY_FILE_VERSION, RegistryValueType, RegistryValue};
 use nom::{ErrorKind, IResult, le_u16, le_u32};
 use self::super::super::REGFILE_SIGNATURE;
-use std::mem::transmute;
-
 
 lazy_static! {
-    static ref REGFILE_SIGNATURE_LE: [u8; 4] = unsafe { transmute(REGFILE_SIGNATURE.to_le()) };
-    static ref REGISTRY_FILE_VERSION_LE: [u8; 4] = unsafe { transmute(REGISTRY_FILE_VERSION.to_le()) };
+    static ref REGFILE_SIGNATURE_LE: [u8; 4] = REGFILE_SIGNATURE.to_le_bytes();
+    static ref REGISTRY_FILE_VERSION_LE: [u8; 4] = REGISTRY_FILE_VERSION.to_le_bytes();
 }
 const UTF16_LE_OPEN_SQUARE_BRACKET: [u8; 2] = [0x5B, 0x00];
 const UTF16_LE_CLOSE_SQUARE_BRACKET: [u8; 2] = [0x5D, 0x00];
@@ -44,20 +42,20 @@ fn nul_terminated_utf16(input: &[u8]) -> IResult<&[u8], String> {
     }
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(data_type<Option<RegistryValueType>>, do_parse!(
     tp: le_u32 >>
     (RegistryValueType::parse(tp))
 ));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(header<()>, do_parse!(
     tag!(*REGFILE_SIGNATURE_LE) >>
     tag!(*REGISTRY_FILE_VERSION_LE) >>
     ()
 ));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(value<RegistryValue>, do_parse!(
     key: nul_terminated_utf16 >>
     tag!(UTF16_LE_SEMICOLON) >>
@@ -69,14 +67,14 @@ named!(value<RegistryValue>, do_parse!(
     tag!(UTF16_LE_SEMICOLON) >>
     data: take!(size) >>
     (RegistryValue{
-        key: key,
+        key,
         value: Some(value),
         data_type: tp,
         data: Some(data.to_vec()),
     })
 ));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(pub parse<Vec<RegistryValue>>,
   do_parse!(
     header >>
