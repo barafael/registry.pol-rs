@@ -1,16 +1,14 @@
 //! Registry Policy File format version 1.
 
-
 mod parser;
 
 use nom;
 
-
 /// Second part of header.
 pub const REGISTRY_FILE_VERSION: u32 = 1;
 
-
-/// The data type field can contain any of the registry value types defined in WinNT.h.
+/// The data type field can contain any of the registry value types defined in
+/// WinNT.h.
 #[repr(u32)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
@@ -30,7 +28,6 @@ impl RegistryValueType {
     /// Same as `REG_DWORD`.
     pub const REG_DWORD_LITTLE_ENDIAN: RegistryValueType = RegistryValueType::REG_DWORD;
     pub const REG_QWORD_LITTLE_ENDIAN: RegistryValueType = RegistryValueType::REG_QWORD;
-
 
     /// Get a `RegistryValueType` from an integer representation, or `None`.
     ///
@@ -58,16 +55,17 @@ impl RegistryValueType {
     }
 }
 
-
 /// A representation of registry value version 1.
 ///
-/// If value, type, size, or data are missing or zero, only the registry key is created.
+/// If value, type, size, or data are missing or zero, only the registry key is
+/// created.
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct RegistryValue {
     /// Path to the registry key.
     ///
-    /// Do not include `HKEY_LOCAL_MACHINE` or `HKEY_CURRENT_USER` in the registry path.
-    /// The location of the file determines which of these keys are used.
+    /// Do not include `HKEY_LOCAL_MACHINE` or `HKEY_CURRENT_USER` in the
+    /// registry path. The location of the file determines which of these
+    /// keys are used.
     pub key: String,
 
     /// The name of the registry value.
@@ -89,7 +87,6 @@ pub struct RegistryValue {
     /// The user-supplied data.
     pub data: Option<Vec<u8>>,
 }
-
 
 /// Parse the [Windows Registry Policy File format](https://msdn.microsoft.com/en-us/library/aa374407%28v=vs.85%29.aspx) from
 /// the specified bytes.

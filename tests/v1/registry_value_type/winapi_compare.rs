@@ -1,7 +1,6 @@
 use registry_pol::v1::RegistryValueType;
 use winapi::um::winnt;
 
-
 #[test]
 fn reg_none() {
     assert_eq!(RegistryValueType::REG_NONE as u32, winnt::REG_NONE);
