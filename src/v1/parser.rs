@@ -27,7 +27,7 @@ fn nul_terminated_utf16(input: &[u8]) -> IResult<&[u8], String> {
     fn utf16_nul(input: &[u8]) -> IResult<&[u8], &[u8]> {
         tag!(input, UTF16_LE_NUL)
     }
-    named!(utf16_bytes<(Vec<u16>, &[u8])>, many_till!(le_u16, utf16_nul));
+    named!(utf16_bytes<(Vec<u16>, &'a [u8])>, many_till!(le_u16, utf16_nul));
 
     match utf16_bytes(input) {
         IResult::Done(input, (chars, zero)) => {
