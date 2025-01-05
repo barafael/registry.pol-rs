@@ -12,10 +12,9 @@ use self::super::super::REGFILE_SIGNATURE;
 use self::super::{RegistryValue, RegistryValueType, REGISTRY_FILE_VERSION};
 use nom::{le_u16, le_u32, ErrorKind, IResult};
 
-lazy_static! {
-    static ref REGFILE_SIGNATURE_LE: [u8; 4] = REGFILE_SIGNATURE.to_le_bytes();
-    static ref REGISTRY_FILE_VERSION_LE: [u8; 4] = REGISTRY_FILE_VERSION.to_le_bytes();
-}
+static REGFILE_SIGNATURE_LE: [u8; 4] = REGFILE_SIGNATURE.to_le_bytes();
+static REGISTRY_FILE_VERSION_LE: [u8; 4] = REGISTRY_FILE_VERSION.to_le_bytes();
+
 const UTF16_LE_OPEN_SQUARE_BRACKET: [u8; 2] = [0x5B, 0x00];
 const UTF16_LE_CLOSE_SQUARE_BRACKET: [u8; 2] = [0x5D, 0x00];
 const UTF16_LE_SEMICOLON: [u8; 2] = [0x3B, 0x00];
@@ -48,8 +47,8 @@ named!(data_type<Option<RegistryValueType>>, do_parse!(
 
 #[rustfmt::skip]
 named!(header<()>, do_parse!(
-    tag!(*REGFILE_SIGNATURE_LE) >>
-    tag!(*REGISTRY_FILE_VERSION_LE) >>
+    tag!(REGFILE_SIGNATURE_LE) >>
+    tag!(REGISTRY_FILE_VERSION_LE) >>
     ()
 ));
 
